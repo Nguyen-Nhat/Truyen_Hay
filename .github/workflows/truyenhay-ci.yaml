@@ -1,0 +1,32 @@
+name: truyen hay ci
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "./**"
+      - ".github/workflows/action/action.yaml"
+      - ".github/workflows/truyenhay-ci.yaml"
+
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "./**"
+      - ".github/workflows/action/action.yaml"
+      - ".github/workflows/truyenhay-ci.yaml"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: ./.github/workflows/action
+      - name: Run maven build command
+        run: mvn clean install -DskipTests
+      - name: Run maven test
+        run: mvn test
